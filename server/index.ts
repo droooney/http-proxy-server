@@ -1,6 +1,6 @@
 import net from 'node:net';
 
-import { blue, green, red } from 'colors/safe';
+import { blue, green, red, yellow } from 'colors/safe';
 
 const PORT = Number(process.env.PORT);
 
@@ -8,15 +8,36 @@ const server = net.createServer((socket) => {
   socket.once('data', (data) => {
     const dataString = data.toString();
     const isHttps = data.includes('CONNECT');
-    let serverPort;
-    let serverAddress;
+    let serverPort: number;
+    let serverAddress: string | undefined;
 
     if (isHttps) {
       serverPort = 443;
-      serverAddress = dataString.split('CONNECT')[1].split(' ')[1].split(':')[0];
+      // prettier-ignore
+      serverAddress = dataString
+        .split('CONNECT')
+        .at(1)
+        ?.split(' ')
+        .at(1)
+        ?.split(':')
+        .at(0);
     } else {
       serverPort = 80;
-      serverAddress = dataString.split('Host: ')[1].split('\n')[0].trim();
+      // prettier-ignore
+      serverAddress = dataString
+        .split('Host: ')
+        .at(1)
+        ?.split('\n')
+        .at(0)
+        ?.trim();
+    }
+
+    if (!serverAddress) {
+      console.log(yellow(`Empty server address: ${dataString}`));
+
+      socket.end();
+
+      return;
     }
 
     const proxySocket = net.createConnection({
