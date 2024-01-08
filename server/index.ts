@@ -29,7 +29,7 @@ const server = net.createServer((socket) => {
     });
 
     if (isHttps) {
-      socket.write('HTTP/1.1 200 OK\n\n');
+      socket.write('HTTP/1.1 200 OK\r\n\r\n');
     } else {
       proxySocket.write(data);
     }
