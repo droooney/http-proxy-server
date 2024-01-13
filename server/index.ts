@@ -32,6 +32,10 @@ const server = net.createServer((socket) => {
         ?.trim();
     }
 
+    socket.on('error', (err) => {
+      console.log(red(`Socket error: ${err.stack ?? err.message}`));
+    });
+
     if (!serverAddress) {
       console.log(yellow(`Empty server address: ${dataString}`));
 
@@ -46,7 +50,7 @@ const server = net.createServer((socket) => {
     });
 
     proxySocket.on('error', (err) => {
-      console.log(red(err.stack ?? err.message));
+      console.log(red(`Proxy error: ${err.stack ?? err.message}`));
     });
 
     if (isHttps) {
