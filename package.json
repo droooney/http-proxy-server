@@ -5,7 +5,8 @@
   "main": "main.ts",
   "scripts": {
     "startDev": "tsx watch --inspect main.ts",
-    "start": "NODE_ENV=production tsx main.ts",
+    "startProd": "NODE_ENV=production tsx main.ts",
+    "start": "until npm run startProd; do echo 'App crashed. Restarting...'; sleep 1; done",
     "typecheck": "tsc --noEmit",
     "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "eslintFix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
